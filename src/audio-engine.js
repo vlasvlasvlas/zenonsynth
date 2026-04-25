@@ -425,7 +425,7 @@ export class ModularAudioEngine {
     }
 
     // Apply musical scale if enabled
-    if (p.scaleEnabled && p.scale !== 'chromatic') {
+    if (p.scaleEnabled && p.scale !== 'free') {
       freq = quantizeToScale(freq, p.scale, p.baseNote);
     }
 

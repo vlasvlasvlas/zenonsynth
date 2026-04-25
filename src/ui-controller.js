@@ -284,9 +284,18 @@ export function bindUI(sim, audio, renderer, els, { renderList, readout, applyPr
     });
   }
   if (els.baseNote) {
+    const display = document.getElementById("baseNoteDisplay");
+    const midiToNote = (midi) => {
+      const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      return `${notes[midi % 12]}${Math.floor(midi / 12) - 1}`;
+    };
     els.baseNote.addEventListener("input", () => {
-      audio.applyParams({ baseNote: Number(els.baseNote.value) });
+      const midi = Number(els.baseNote.value);
+      if (display) display.textContent = midiToNote(midi);
+      audio.applyParams({ baseNote: midi });
     });
+    // Set initial display
+    if (display) display.textContent = midiToNote(Number(els.baseNote.value));
   }
 
   // Mod matrix controls (delegated)

@@ -172,7 +172,8 @@
               <label class="ctrl">
                 ESCALA
                 <select id="scaleSelect">
-                  <option value="chromatic">CHROM</option>
+                  <option value="free">FREE (NO SCALE)</option>
+                  <option value="chromatic">CHROMATIC</option>
                   <option value="pentatonic" selected>PENTA</option>
                   <option value="major">MAJOR</option>
                   <option value="minor">MINOR</option>
@@ -181,8 +182,8 @@
                   <option value="harmonic_minor">HARM MIN</option>
                 </select>
               </label>
-              <label class="ctrl">
-                BASE
+              <label class="ctrl" style="position:relative;">
+                BASE <span id="baseNoteDisplay" style="color:var(--accent); font-weight:bold; margin-left:4px;">C3</span>
                 <input id="baseNote" type="range" min="24" max="72" step="1" value="48" />
               </label>
             </div>

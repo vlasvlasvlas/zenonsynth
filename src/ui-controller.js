@@ -88,7 +88,9 @@ export function renderRunnerList(sim, els, audio) {
               <option value="1" ${runner.direction > 0 ? "selected" : ""}>FWD</option>
               <option value="-1" ${runner.direction < 0 ? "selected" : ""}>REV</option>
             </select></label>
-            <label class="ctrl">RATIO <input type="range" min="0.05" max="0.95" step="0.01" data-field="ratio" value="${runner.ratio}" /></label>
+            <label class="ctrl" title="Proporción del salto hacia el objetivo (0.5 = avanza la mitad)">
+              RATIO SALTO <input type="range" min="0.05" max="0.95" step="0.01" data-field="ratio" value="${runner.ratio}" />
+            </label>
             <label class="ctrl">SPEED <input type="range" min="0" max="2" step="0.01" data-field="speedMul" value="${runner.speedMul}" /></label>
             <label class="ctrl">START <input type="range" min="0" max="0.92" step="0.01" data-field="startS" value="${runner.startS}" /></label>
           </div>

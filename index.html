@@ -58,6 +58,7 @@
 
         <!-- CANVAS AREA -->
         <section class="canvas-section">
+          <button id="toggleMapBtn" class="tbtn" style="position: absolute; right: 24px; bottom: 24px; z-index: 10; background: rgba(7,4,1,0.8);">Ocultar Mapa</button>
           <div class="canvas-wrap">
             <canvas id="simCanvas" width="1200" height="700" aria-label="Simulacion asintotica"></canvas>
           </div>
@@ -78,7 +79,7 @@
             <button class="tab active" data-tab="runners">RUNNERS</button>
             <button class="tab" data-tab="synth">SYNTH</button>
             <button class="tab" data-tab="fx">FX</button>
-            <button class="tab" data-tab="tools">TOOLS</button>
+            <button class="tab" data-tab="tools">SISTEMA</button>
           </nav>
 
           <!-- TAB: RUNNERS -->
@@ -249,7 +250,7 @@
             </div>
           </div>
 
-          <!-- TAB: TOOLS -->
+          <!-- TAB: SISTEMA -->
           <div class="tab-content" id="tab-tools">
             <div class="section-label">PRESETS</div>
             <div class="tools-group">

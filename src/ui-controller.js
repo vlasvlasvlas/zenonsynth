@@ -196,6 +196,16 @@ export function bindUI(sim, audio, renderer, els, { renderList, readout, applyPr
     });
   });
 
+  // Toggle Map
+  const toggleMapBtn = document.getElementById("toggleMapBtn");
+  if (toggleMapBtn) {
+    toggleMapBtn.addEventListener("click", () => {
+      renderer.showOverview = !renderer.showOverview;
+      toggleMapBtn.textContent = renderer.showOverview ? "Ocultar Mapa" : "Mostrar Mapa";
+      if (!sim.running) renderer.draw();
+    });
+  }
+
   const applyAudioFromUI = () => {
     const params = readAudioParamsFromEls(els);
     audio.applyParams(params);

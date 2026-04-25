@@ -11,6 +11,7 @@ export class Renderer {
     // Audio reactivity data (populated externally)
     this.audioRMS = 0;
     this.audioFFT = null;
+    this.showOverview = true;
   }
 
   setQuality(mode) {
@@ -66,7 +67,9 @@ export class Renderer {
     this.drawTrails(toX, toY, q.trailPoints);
     this.drawGoal(goal, toX, toY);
     this.drawRunners(toX, toY);
-    this.drawOverview(path, viewLeft, viewTop, viewW, viewH, q.overviewSamples);
+    if (this.showOverview) {
+      this.drawOverview(path, viewLeft, viewTop, viewW, viewH, q.overviewSamples);
+    }
     this.drawGauge();
     this.drawTopMetrics(span);
   }

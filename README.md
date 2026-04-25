@@ -9,14 +9,23 @@ Al configurar *runners* (corredores) que intentan alcanzar un objetivo, cada ite
 
 ---
 
-## 💡 La Idea
+## 💡 La Paradoja de Zenón (La Dicotomía)
 
-Zenón de Elea propuso que, para llegar a un destino, primero debés recorrer la mitad de la distancia, luego la mitad de la mitad restante, y así al infinito. Nunca llegás. 
+**ZenonSynth** se fundamenta filosófica y matemáticamente en la **Paradoja de la Dicotomía** atribuida a Zenón de Elea (siglo V a.C.).
 
-En **ZenonSynth**, representamos esta idea con entidades llamadas *runners*. Cada paso que dan acorta la distancia hacia su destino a la mitad (o según el ratio que le configures). Esto genera un patrón rítmico que acelera hacia el infinito.
+La paradoja establece que el movimiento es imposible porque, para que un objeto llegue de un punto A a un punto B, primero debe recorrer la mitad de la distancia que los separa. Una vez allí, debe recorrer la mitad de la distancia restante, luego la mitad de lo que queda, y así sucesivamente. Dado que el espacio puede dividirse infinitamente, el objeto debe realizar un número infinito de pasos, lo que implica que **nunca alcanzará su destino final**.
+
+Matemáticamente, esto se representa como la serie infinita:
+`1/2 + 1/4 + 1/8 + 1/16 + ... = 1`
+
+### Traducción a Síntesis Audiovisual
+
+En **ZenonSynth**, representamos esta idea con entidades llamadas *runners*. Cada paso que dan acorta la distancia hacia su destino a la mitad (o según el ratio exponencial que le configures). Esto genera un patrón de intervalos de tiempo cada vez más cortos, acelerando hacia el infinito sin nunca llegar realmente a detenerse (asíntota).
+
 El motor de audio y el motor visual interpretan esta simulación en tiempo real:
-- A medida que el *runner* se acerca, la frecuencia del sintetizador sube de tono (o baja, si va en reversa), generando un glissando asintótico.
-- La velocidad de los saltos crea polirritmias complejas.
+- A medida que el *runner* se acerca, el intervalo de tiempo entre "pasos" se comprime, elevando la velocidad rítmica exponencialmente hasta llegar a rangos de audiofrecuencia (generando un glissando asintótico).
+- La frecuencia del oscilador puede estar atada a la distancia restante, subiendo o bajando de tono asintóticamente.
+- Múltiples runners corriendo a distintas velocidades y ratios de convergencia generan polirritmias irracionales extremadamente complejas.
 - La interfaz visual pulsa y estalla (Convergence FX) a medida que la entidad queda atrapada en el límite infinitesimal.
 
 ## 🎛️ Características

@@ -213,32 +213,54 @@ export class SimCore {
       if (!runner.enabled) return;
       const effectiveSpeed = this.speed * runner.speedMul;
       if (effectiveSpeed <= 0.00001) return;
+      
+      // Calculate how long since last step
+      let timePassed = now - runner.lastStepAt;
+      
+      // Dynamic interval: speed also scales the absolute minimum time between steps
+      // so a runner with 0.5x speed will visibly cap at a lower max speed (33ms) than one at 2x (8ms)
+      const dynamicMinInterval = this.minIntervalMs / effectiveSpeed;
+      
       const interval = Math.max(
-        this.minIntervalMs,
+        dynamicMinInterval,
         (this.baseIntervalMs * Math.pow(this.intervalShrink, runner.iteration)) / effectiveSpeed
       );
-      if (now - runner.lastStepAt < interval) return;
+      
+      if (timePassed < interval) return;
+
+      // Calculate how many steps we should take this frame
+      let stepsToTake = 1;
+      if (interval < 16.66 && timePassed > interval) {
+        stepsToTake = Math.floor(timePassed / interval);
+        const maxSteps = this.getQualityConfig().maxAudioEventsPerFrame || 4;
+        stepsToTake = Math.min(stepsToTake, maxSteps);
+      }
 
       runner.lastStepAt = now;
-      const prevS = runner.s;
-      runner.s = prevS + (runner.targetS - prevS) * runner.ratio;
-      runner.s = clamp(runner.s, 0, 1);
-      runner.iteration += 1;
 
-      const jump = this.distanceAlongPath(prevS, runner.s);
+      // Execute the steps
+      for (let i = 0; i < stepsToTake; i++) {
+        const prevS = runner.s;
+        runner.s = prevS + (runner.targetS - prevS) * runner.ratio;
+        runner.s = clamp(runner.s, 0, 1);
+        runner.iteration += 1;
+
+        if (runner.exactHalf) {
+          runner.pow5 *= 5n;
+          runner.remainingExact = formatHalfExact(runner.iteration, runner.pow5, 72);
+        }
+      }
+
+      // Calculate metrics based on the final step
+      const jump = this.distanceAlongPath(runner.history[runner.history.length-1]?.s ?? 0, runner.s);
       const rem = this.distanceAlongPath(runner.s, runner.targetS);
       runner.lastJumpNorm = jump / runner.startGap;
       runner.remainingNorm = rem / runner.startGap;
       runner.lastJumpKm = this.pathDistanceToKm(jump);
       runner.remainingKm = this.pathDistanceToKm(rem);
 
-      if (runner.exactHalf) {
-        runner.pow5 *= 5n;
-        runner.remainingExact = formatHalfExact(runner.iteration, runner.pow5, 72);
-      }
-
       const point = this.mapS(runner.s);
-      runner.history.push({ ...point, n: runner.iteration });
+      runner.history.push({ ...point, s: runner.s, n: runner.iteration });
       const keep = this.getQualityConfig().trailPoints + 80;
       if (runner.history.length > keep) runner.history.shift();
 

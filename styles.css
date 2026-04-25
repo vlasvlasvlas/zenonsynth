@@ -52,18 +52,24 @@ body::before {
 .topbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 12px;
+  gap: 16px;
+  padding: 10px 16px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  min-height: 36px;
+  min-height: 48px;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+.topbar::-webkit-scrollbar {
+  display: none;
 }
 
 .topbar-title {
-  font-size: 11px;
+  font-size: 14px;
+  font-weight: bold;
   letter-spacing: 0.12em;
-  opacity: 0.7;
+  opacity: 0.8;
   white-space: nowrap;
 }
 
@@ -104,9 +110,9 @@ body::before {
   border: 1px solid var(--border);
   color: var(--phosphor);
   background: transparent;
-  padding: 4px 8px;
+  padding: 6px 12px;
   font: inherit;
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
@@ -143,8 +149,8 @@ body::before {
   color: var(--phosphor);
   border: 1px solid var(--border);
   font: inherit;
-  font-size: 10px;
-  padding: 3px 4px;
+  font-size: 12px;
+  padding: 4px 6px;
   cursor: pointer;
 }
 

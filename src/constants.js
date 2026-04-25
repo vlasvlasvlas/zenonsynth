@@ -39,9 +39,8 @@ export const PATHS = {
   circle: {
     id: "circle",
     map: (s) => {
-      // Semicircunferencia pronunciada (180 grados reales)
-      const start = Math.PI * 1.15;
-      const end = start + Math.PI;
+      const start = -Math.PI / 2; // start at top (12 o'clock)
+      const end = start + Math.PI * 2; // full 360 degrees
       const a = start + (end - start) * s;
       return { x: 0.5 + Math.cos(a) * 0.34, y: 0.52 + Math.sin(a) * 0.34 };
     },

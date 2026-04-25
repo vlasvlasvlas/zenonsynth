@@ -1,11 +1,11 @@
-# ZenonSynth SOTA
+# ZenonSynth
 
-ZenonSynth es un instrumento audiovisual basado en la web que explora la paradoja de la dicotomía de Zenón a través de una simulación de convergencia asintótica combinada con un motor de síntesis modular (SOTA). 
+ZenonSynth es un instrumento audiovisual basado en la web que explora la paradoja de la dicotomía de Zenón a través de una simulación de convergencia asintótica combinada con un motor de síntesis modular. 
 
 Al configurar *runners* (corredores) que intentan alcanzar un objetivo, cada iteración los acerca exponencialmente, creando dinámicas rítmicas, armónicas y visuales fascinantes que nunca terminan de resolverse.
 
 ## 🔗 Demo
-[**¡Probá ZenonSynth SOTA acá!**](https://vlasvlasvlas.github.io/zenonsynth/)
+[**¡Probá ZenonSynth acá!**](https://vlasvlasvlas.github.io/zenonsynth/)
 
 ---
 

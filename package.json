@@ -1,0 +1,17 @@
+{
+  "name": "zenonsynth",
+  "version": "2.0.0",
+  "description": "ZenonSynth — Infinite Pursuit Audiovisual Instrument",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["synth", "audiovisual", "zeno", "web-audio", "generative"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^6.3.3"
+  }
+}

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ZenonSynth — Instrumento audiovisual web basado en la paradoja de Zenón. Simulación de convergencia asintótica con síntesis modular." />
+    <title>ZENON SYNTH :: INSTRUMENTO</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.addEventListener("error", (e) => {
+        fetch("http://localhost:3001/", { method: "POST", body: e.message + " at " + e.filename + ":" + e.lineno });
+      });
+      window.addEventListener("unhandledrejection", (e) => {
+        fetch("http://localhost:3001/", { method: "POST", body: "Unhandled rejection: " + e.reason });
+      });
+    </script>
+  </head>
+  <body>
+    <main class="app">
+
+      <!-- ─── TOP BAR ─────────────────────────────────────── -->
+      <header class="topbar">
+        <span class="topbar-title">ZENON SYNTH</span>
+        <button id="aboutBtn" class="tbtn about-btn" title="About / Info">?</button>
+        <div class="transport">
+          <button id="startBtn" class="tbtn" title="Iniciar (Space)">▶</button>
+          <button id="pauseBtn" class="tbtn" title="Pausar (Space)">⏸</button>
+          <button id="resetBtn" class="tbtn" title="Reiniciar (R)">⏹</button>
+          <span class="transport-sep"></span>
+          <button id="addRunnerBtn" class="tbtn" title="Agregar runner (+)">+</button>
+          <button id="removeRunnerBtn" class="tbtn" title="Quitar último runner (-)">−</button>
+          <span class="transport-sep"></span>
+          <button id="fullscreenBtn" class="tbtn" title="Fullscreen (F)">⛶</button>
+          <button id="recAudioBtn" class="tbtn" title="Grabar audio">🔴A</button>
+          <button id="recVideoBtn" class="tbtn" title="Grabar video">🔴V</button>
+          <button id="shareBtn" class="tbtn" title="Compartir URL">🔗</button>
+        </div>
+        <div class="topbar-status">
+          <select id="pathType" class="mini-select" title="Trayectoria ([/])">
+            <option value="line">LINEA</option>
+            <option value="circle">CIRCULO</option>
+            <option value="spiral">ESPIRAL</option>
+          </select>
+          <select id="qualityMode" class="mini-select" title="Calidad">
+            <option value="eco">ECO</option>
+            <option value="normal" selected>NORMAL</option>
+            <option value="high">HIGH</option>
+          </select>
+          <label class="speed-control" title="Velocidad">
+            SPD
+            <input id="speed" type="range" min="0.3" max="2.6" step="0.05" value="1" />
+          </label>
+        </div>
+      </header>
+
+      <!-- ─── MAIN LAYOUT ─────────────────────────────────── -->
+      <div class="main-layout">
+
+        <!-- CANVAS AREA -->
+        <section class="canvas-section">
+          <div class="canvas-wrap">
+            <canvas id="simCanvas" width="1200" height="700" aria-label="Simulacion asintotica"></canvas>
+          </div>
+          <div class="info-strip">
+            <div class="readout" id="readout">READY</div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="info-row">
+              <span id="progressMain">KM: 0 / 1</span>
+              <span id="progressSub">0%</span>
+            </div>
+          </div>
+          <div class="decimal-window" id="decimalWindow">REM EXACTA: 1.0</div>
+        </section>
+
+        <!-- SIDE PANEL (TABBED) -->
+        <aside class="side-panel">
+          <nav class="tab-bar">
+            <button class="tab active" data-tab="runners">RUNNERS</button>
+            <button class="tab" data-tab="synth">SYNTH</button>
+            <button class="tab" data-tab="fx">FX</button>
+            <button class="tab" data-tab="tools">TOOLS</button>
+          </nav>
+
+          <!-- TAB: RUNNERS -->
+          <div class="tab-content active" id="tab-runners">
+            <div id="runnerList" class="runner-list"></div>
+          </div>
+
+          <!-- TAB: SYNTH -->
+          <div class="tab-content" id="tab-synth">
+            <div class="section-label">FILTER</div>
+            <div class="ctrl-grid c3">
+              <label class="ctrl">
+                MODE
+                <select id="filterMode">
+                  <option value="hp_lp" selected>HP→LP</option>
+                  <option value="lowpass">LP</option>
+                  <option value="highpass">HP</option>
+                  <option value="bandpass">BP</option>
+                </select>
+              </label>
+              <label class="ctrl">
+                LP CUT
+                <input id="cutoff" type="range" min="80" max="7200" step="1" value="2200" />
+              </label>
+              <label class="ctrl">
+                HP CUT
+                <input id="highpass" type="range" min="20" max="2200" step="1" value="120" />
+              </label>
+              <label class="ctrl">
+                RESO
+                <input id="resonance" type="range" min="0.2" max="26" step="0.01" value="0.9" />
+              </label>
+              <label class="ctrl">
+                LFO RATE
+                <input id="lfoRate" type="range" min="0.05" max="18" step="0.01" value="1.8" />
+              </label>
+              <label class="ctrl">
+                LFO DEPTH
+                <input id="lfoDepth" type="range" min="0" max="1" step="0.01" value="0.35" />
+              </label>
+            </div>
+
+            <div class="section-label">ENVELOPE</div>
+            <div class="ctrl-grid c4">
+              <label class="ctrl">
+                ATK
+                <input id="attack" type="range" min="0.001" max="2" step="0.001" value="0.003" />
+              </label>
+              <label class="ctrl">
+                DEC
+                <input id="decay" type="range" min="0.005" max="2" step="0.001" value="0.07" />
+              </label>
+              <label class="ctrl">
+                SUS
+                <input id="sustain" type="range" min="0" max="1" step="0.01" value="0.18" />
+              </label>
+              <label class="ctrl">
+                REL
+                <input id="release" type="range" min="0.01" max="4" step="0.01" value="0.09" />
+              </label>
+            </div>
+
+            <div class="section-label">GLOBAL VOICE</div>
+            <div class="ctrl-grid c3">
+              <label class="ctrl">
+                OSC LAYERS
+                <input id="oscLayers" type="range" min="1" max="4" step="1" value="2" />
+              </label>
+              <label class="ctrl">
+                WAVE A <select id="waveA"><option value="square" selected>SQR</option><option value="saw">SAW</option><option value="triangle">TRI</option><option value="sine">SIN</option></select>
+              </label>
+              <label class="ctrl">
+                WAVE B <select id="waveB"><option value="saw" selected>SAW</option><option value="square">SQR</option><option value="triangle">TRI</option><option value="sine">SIN</option></select>
+              </label>
+              <label class="ctrl">
+                WAVE C <select id="waveC"><option value="sine" selected>SIN</option><option value="triangle">TRI</option><option value="square">SQR</option><option value="saw">SAW</option></select>
+              </label>
+              <div class="voice-toggles">
+                <label><input id="voiceA" type="checkbox" checked /> A</label>
+                <label><input id="voiceB" type="checkbox" checked /> B</label>
+                <label><input id="voiceC" type="checkbox" checked /> C</label>
+              </div>
+            </div>
+
+            <div class="section-label">ESCALA</div>
+            <div class="ctrl-grid c3">
+              <label class="ctrl">
+                ON <input id="scaleEnabled" type="checkbox" />
+              </label>
+              <label class="ctrl">
+                ESCALA
+                <select id="scaleSelect">
+                  <option value="chromatic">CHROM</option>
+                  <option value="pentatonic" selected>PENTA</option>
+                  <option value="major">MAJOR</option>
+                  <option value="minor">MINOR</option>
+                  <option value="dorian">DORIAN</option>
+                  <option value="whole_tone">WHOLE</option>
+                  <option value="harmonic_minor">HARM MIN</option>
+                </select>
+              </label>
+              <label class="ctrl">
+                BASE
+                <input id="baseNote" type="range" min="24" max="72" step="1" value="48" />
+              </label>
+            </div>
+
+            <div class="section-label">MOD MATRIX</div>
+            <div class="section-hint">SOURCE → DEST :: AMOUNT</div>
+            <div class="mod-matrix">
+              <div class="mod-slot" data-mod-index="0">
+                <select data-mod-field="source"><option value="remaining" selected>REM</option><option value="jump">JUMP</option><option value="iteration">ITER</option><option value="none">—</option></select>
+                <span class="mod-arrow">→</span>
+                <select data-mod-field="destination"><option value="filter.lp.cutoff" selected>CUT</option><option value="filter.lp.q">RESO</option><option value="filter.hp.cutoff">HP</option><option value="osc.detune">DET</option><option value="amp.gain">GAIN</option><option value="pan">PAN</option><option value="delay.mix">DLY</option><option value="reverb.mix">REV</option></select>
+                <input type="range" min="-1" max="1" step="0.01" value="0.62" data-mod-field="amount" />
+              </div>
+              <div class="mod-slot" data-mod-index="1">
+                <select data-mod-field="source"><option value="remaining">REM</option><option value="jump" selected>JUMP</option><option value="iteration">ITER</option><option value="none">—</option></select>
+                <span class="mod-arrow">→</span>
+                <select data-mod-field="destination"><option value="filter.lp.cutoff">CUT</option><option value="filter.lp.q">RESO</option><option value="filter.hp.cutoff">HP</option><option value="osc.detune" selected>DET</option><option value="amp.gain">GAIN</option><option value="pan">PAN</option><option value="delay.mix">DLY</option><option value="reverb.mix">REV</option></select>
+                <input type="range" min="-1" max="1" step="0.01" value="0" data-mod-field="amount" />
+              </div>
+              <div class="mod-slot" data-mod-index="2">
+                <select data-mod-field="source"><option value="remaining">REM</option><option value="jump">JUMP</option><option value="iteration" selected>ITER</option><option value="none">—</option></select>
+                <span class="mod-arrow">→</span>
+                <select data-mod-field="destination"><option value="filter.lp.cutoff">CUT</option><option value="filter.lp.q">RESO</option><option value="filter.hp.cutoff">HP</option><option value="osc.detune">DET</option><option value="amp.gain" selected>GAIN</option><option value="pan">PAN</option><option value="delay.mix">DLY</option><option value="reverb.mix">REV</option></select>
+                <input type="range" min="-1" max="1" step="0.01" value="0" data-mod-field="amount" />
+              </div>
+              <div class="mod-slot" data-mod-index="3">
+                <select data-mod-field="source"><option value="remaining" selected>REM</option><option value="jump">JUMP</option><option value="iteration">ITER</option><option value="none">—</option></select>
+                <span class="mod-arrow">→</span>
+                <select data-mod-field="destination"><option value="filter.lp.cutoff">CUT</option><option value="filter.lp.q">RESO</option><option value="filter.hp.cutoff">HP</option><option value="osc.detune">DET</option><option value="amp.gain">GAIN</option><option value="pan">PAN</option><option value="delay.mix" selected>DLY</option><option value="reverb.mix">REV</option></select>
+                <input type="range" min="-1" max="1" step="0.01" value="0" data-mod-field="amount" />
+              </div>
+            </div>
+
+            <!-- Legacy mod (hidden, for preset compat) -->
+            <input id="modSource" type="hidden" value="remaining" />
+            <input id="modAmount" type="hidden" value="0.62" />
+          </div>
+
+          <!-- TAB: FX -->
+          <div class="tab-content" id="tab-fx">
+            <div class="section-label">DELAY</div>
+            <div class="ctrl-grid c3">
+              <label class="ctrl">MIX <input id="delayMix" type="range" min="0" max="1" step="0.01" value="0.24" /></label>
+              <label class="ctrl">TIME <input id="delayTime" type="range" min="20" max="1200" step="1" value="220" /></label>
+              <label class="ctrl">FB <input id="delayFeedback" type="range" min="0" max="0.95" step="0.01" value="0.32" /></label>
+            </div>
+            <div class="section-label">REVERB</div>
+            <div class="ctrl-grid c2">
+              <label class="ctrl">MIX <input id="reverbMix" type="range" min="0" max="1" step="0.01" value="0.18" /></label>
+              <label class="ctrl">DECAY <input id="reverbDecay" type="range" min="0.2" max="8" step="0.01" value="1.7" /></label>
+            </div>
+            <div class="section-label">OUTPUT</div>
+            <div class="ctrl-grid c1">
+              <label class="ctrl master-ctrl">
+                MASTER
+                <input id="masterGain" type="range" min="0" max="1" step="0.01" value="0.55" />
+              </label>
+            </div>
+            <div class="section-label">ESCENA</div>
+            <div class="ctrl-grid c2">
+              <label class="ctrl">
+                KM REAL
+                <input id="realLengthKm" type="number" min="0.001" max="1000000" step="0.01" value="1" />
+              </label>
+            </div>
+          </div>
+
+          <!-- TAB: TOOLS -->
+          <div class="tab-content" id="tab-tools">
+            <div class="section-label">PRESETS</div>
+            <div class="tools-group">
+              <select id="factoryPreset" class="tool-select">
+                <option value="zenon_dry">ZENON DRY</option>
+                <option value="infinite_drone">INFINITE DRONE</option>
+                <option value="pursuit_percussive">PURSUIT PERCUSSIVE</option>
+              </select>
+              <button id="applyFactoryBtn" class="tbtn wide">APLICAR</button>
+              <button id="savePresetBtn" class="tbtn wide">GUARDAR JSON</button>
+              <label class="tbtn wide file-btn">
+                CARGAR JSON
+                <input id="loadPresetInput" type="file" accept="application/json" />
+              </label>
+            </div>
+            <div class="section-label">EXPORT</div>
+            <div class="tools-group">
+              <button id="exportDataBtn" class="tbtn wide">EXPORT CSV</button>
+            </div>
+            <div class="section-label">SHORTCUTS</div>
+            <div class="shortcut-list">
+              <span>SPACE</span><span>Play / Pause</span>
+              <span>R</span><span>Reset</span>
+              <span>+ / −</span><span>Add / Remove runner</span>
+              <span>F</span><span>Fullscreen</span>
+              <span>M</span><span>Mute</span>
+              <span>[ / ]</span><span>Cambiar trayectoria</span>
+              <span>1 2 3</span><span>Factory presets</span>
+              <span>⌘Z</span><span>Undo</span>
+              <span>⌘⇧Z</span><span>Redo</span>
+              <span>⌘S</span><span>Save preset</span>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+
+    </main>
+
+    <!-- ─── ABOUT MODAL ───────────────────────────────────── -->
+    <div id="aboutModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <button id="closeAboutBtn" class="modal-close">✕</button>
+        <h2>ZENON SYNTH SOTA</h2>
+        <p class="modal-subtitle">Instrumento audiovisual asintótico.</p>
+        
+        <div class="modal-body">
+          <p><strong>ZenonSynth</strong> explora la paradoja de la dicotomía de Zenón a través de una simulación de convergencia asintótica combinada con síntesis modular de audio.</p>
+          
+          <p>Al configurar <em>runners</em>, cada iteración los acerca exponencialmente al objetivo, creando dinámicas rítmicas y armónicas. La frecuencia sube (o baja) asintóticamente, generando polirritmias visuales y sonoras complejas.</p>
+          
+          <ul class="modal-features">
+            <li><strong>Audio Engine V2:</strong> Osciladores per-runner, Mod Matrix V1, Filtros.</li>
+            <li><strong>Visuals:</strong> Audio-reactividad (FFT/RMS) con <em>Convergence FX</em>.</li>
+            <li><strong>Scale Quantization:</strong> Escalas musicales en tiempo real.</li>
+            <li><strong>Persistence:</strong> Undo/Redo, Export JSON/CSV, grabación integrada.</li>
+          </ul>
+
+          <div class="modal-footer">
+            <a href="https://github.com/vlasvlasvlas/zenonsynth" target="_blank" class="github-link">
+              <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+              Ver en GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

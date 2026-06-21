@@ -89,3 +89,6 @@ ZenonSynth está construido sobre estándares web crudos (Vanilla JS, CSS) impul
 
 ---
 *Desarrollado como instrumento de performance.*
+## License
+
+MIT License — © 2026 [Vladimiro Bellini](https://github.com/vlasvlasvlas). Free to use and modify, attribution required.
